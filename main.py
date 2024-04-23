@@ -8,18 +8,20 @@ class CompExp:
     # Take input - keeps taking row crossing till input of 0
     def takeInput(self):
         if self.methodFlip != []:
-            print("You've already entered the method flip: ")
+            print("You've already entered the place notation: ")
             print(self.methodFlip)
             if(input("Enter 0 if you wish to cancel\n>> ") == "0"):
                 return
 
-        print("Please enter the method's default crossing order (enter 0 to finish)")
+        print("Please enter the method's default place notation (enter 0 to finish)")
         print("For each change put in the numbers and press enter")
         exit = False
         while not exit:
             inp = input(">> ")
             if inp == "0":
                 exit = True
+            elif inp.lower() == "x":
+                self.methodFlip.append(-1)
             else:
                 try:
                     varInt = int(inp)
@@ -31,7 +33,7 @@ class CompExp:
     # Take bobs and singles
     def takeBandS(self):
         # taking bobs
-        print("Please enter the bob crossing order")
+        print("Please enter the bob place notation (enter 0 to finish)")
         inp = input(">> ")
         if inp == "0":
             exit = True
@@ -43,7 +45,7 @@ class CompExp:
                 print("Input not added!\nerror: wrong type")
 
         # taking singles
-        print("Please enter the single crossing order")
+        print("Please enter the single place notation (enter 0 to finish)")
         inp = input(">> ")
         try:
             varInt = int(inp)
@@ -92,47 +94,51 @@ class CompExp:
             permutations[0].append(x+1)
         
         #swap each row
-        count = 1
+        count = 0
         roundsFound = False
         while(count < 10000 and not roundsFound):
             swap = self.methodFlip[count % len(self.methodFlip)]
-            print(swap)
+            if swap == -1:
+                permutations.append(self.permuteRow(permutations[count], []))
+            else:
+                permutations.append(self.permuteRow(permutations[count], swap))
 
             count=count+1
+
+            #exit condition
+            if(permutations[count] == permutations[0]):
+                roundsFound = True
+
+            
     
+
     def permuteRow(self, row, swap):
-        
         #Split the row and swap into arrays
-        prevRow = list(row)
-        temp = list(swap)
         
-        #Find the bells that are not making a place
-        swap = []
-        for c in range (int(self.stage)):
-            if c+1 not in temp:
-                swap.append(c+1)
+        #covert swap to array of chars
+        if swap != []:
+            temp = str(swap)
+            swapArr = []
+            for x in temp:
+                swapArr.append(int(x))
+        else:
+            swapArr = []
+
+        # print("swap: " + str(swapArr))
 
         #Swap the bells
         newRow = []
 
-        # for count in range(0, len(swap),2):
-            # print(swap[count], " ", swap[count+1])
-
-        # should be: 0,2,4,6
-        for count in range(0, len(swap),2):
-            print(count)
-            if(swap[count] == count+1):
-                print("here")
-                newRow.append(prevRow[swap[count+1]-1])
-                newRow.append(prevRow[swap[count]-1])
+        x = 0
+        while x < (len(row)):
+            if x+1 in swapArr:
+                newRow.append(row[x])
             else:
-                print("else")
-                newRow.append(prevRow[count])
-                newRow.append(prevRow[count+1])
-                count = count - 2
-            # print(count)
+                x += 1
+                newRow.append(row[x])
+                newRow.append(row[x-1])
+            x += 1
         print(newRow)
-
         return newRow
     
     # Menu for composition writeout
@@ -143,8 +149,8 @@ class CompExp:
         
         print("This is the menu for writing out the method")
         print("Please enter the number of the option you wish to choose:")
-        print("     1: enter method default crossing order")
-        print("     2: enter the bob and single crossing order")
+        print("     1: enter method default place notation")
+        print("     2: enter the bob and single place notation")
         print("     3: enter the composition")
         print("     4: print the changes")
         print("     0: Exit")
@@ -158,12 +164,10 @@ class CompExp:
             self.takeBandS()
             self.compWriteMenu()
         elif userOp == "3":
-            # print("ife")
             self.takeComp()
             self.compWriteMenu()
         elif userOp == "4":
-            # self.permute()
-            self.permuteRow([1,2,3,4,5,6,7,8], [3,4])
+            self.permute()
         elif userOp == "0":
             print("Goodbye!")
         else:
