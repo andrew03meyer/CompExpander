@@ -4,6 +4,7 @@ class CompExp:
     single = 0
     composition = []
     stage = -1
+    courseLen = -1
 
     # Take input - keeps taking row crossing till input of 0
     def takeInput(self):
@@ -63,6 +64,8 @@ class CompExp:
             print(self.composition)
             if(input("Enter 0 if you wish to cancel\n>> ") == "0"):
                 return
+        if self.courseLen == -1:
+            self.courseLen = input("You haven't entered a course length.\n>> ")
 
         print("Please enter the composition per course end (enter 0 to finish)")
         exit = False
@@ -72,11 +75,18 @@ class CompExp:
                 exit = True
             else:
                 try:
-                    varInt = int(inp)
-                    self.composition.append(varInt)
+                    # convert input into int array
+                    intArr = []
+                    for x in range (len(str(inp))):
+                        intArr.append(int(str(inp)[x]))
+                        
+                    self.composition.append(intArr)
                 except:
                     print("Input not added!\nerror: wrong type")
-        print(self.composition)
+
+        # print composition
+        for x in range (len(self.composition)):
+            print(self.composition[x])
 
     #Write out the method
     def permute(self):
@@ -96,14 +106,22 @@ class CompExp:
         #swap each row
         count = 0
         roundsFound = False
-        while(count < 10000 and not roundsFound):
-            swap = self.methodFlip[count % len(self.methodFlip)]
-            if swap == -1:
-                permutations.append(self.permuteRow(permutations[count], []))
-            else:
-                permutations.append(self.permuteRow(permutations[count], swap))
 
-            count=count+1
+        # trackers for composition
+        course = 0
+        inc = 0
+
+        while(count < 10000 and not roundsFound):
+            # if there is no call
+            if (self.composition[course][inc] != inc):
+                swap = self.methodFlip[count % len(self.methodFlip)]
+                if swap == -1:
+                    permutations.append(self.permuteRow(permutations[count], []))
+                else:
+                    permutations.append(self.permuteRow(permutations[count], swap))
+
+                count=count+1
+                
 
             #exit condition
             if(permutations[count] == permutations[0]):
