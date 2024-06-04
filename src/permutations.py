@@ -22,16 +22,18 @@ def permute(STATE):
     inc = 0
 
     while(count < 10000 and not roundsFound):
-        # if there is no call
-        # if (composition[course][inc] != inc):
-        swap = STATE['methodFlip'][count % len(STATE['methodFlip'])]
-        if swap == -1:
+        stationaryBells = STATE['methodFlip'][count % len(STATE['methodFlip'])]
+        #if all bells cross
+        if stationaryBells == -1:
             permutations.append(permuteRow(permutations[count], []))
         else:
-            permutations.append(permuteRow(permutations[count], swap))
+            permutations.append(permuteRow(permutations[count], stationaryBells))
 
         count=count+1
-            
+
+        #Working out a lead end
+        if isLeadEnd(permutations):
+            print("is the lead end")
 
         #exit condition
         if(permutations[count] == permutations[0]):
@@ -70,3 +72,15 @@ def permuteRow(row, swap):
         x += 1
     print(newRow)
     return newRow
+
+
+
+def isLeadEnd(permutations):
+    if len(permutations) > 2:
+        #as the "bob" row will be calculated without the bob, we need to ignore it
+        backOne = permutations[len(permutations) - 2]
+        backTwo = permutations[len(permutations) - 3]
+    
+    if backOne[0] == 1 and backTwo[0] == 1:
+        return True
+    return False
