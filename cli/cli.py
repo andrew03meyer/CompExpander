@@ -97,10 +97,6 @@ def takeComp():
 
 # Menu for composition writeout
 def compWriteMenu():
-    #set the stage for the method
-    if STATE['stage'] == 0:
-        STATE['stage'] = input("Enter the number of bells\n>> ")
-    
     print("This is the menu for writing out the method")
     print("Please enter the number of the option you wish to choose:")
     print("     1: enter method default place notation")
@@ -113,6 +109,10 @@ def compWriteMenu():
     # take the option
     userOp = input(">> ")
     if userOp == "1":
+        #set the stage for the method
+        # if STATE['stage'] == 0:
+        STATE['stage'] = input("Enter the number of bells\n>> ")
+
         takePlaceNotation()
         compWriteMenu()
     elif userOp == "2":
@@ -144,6 +144,15 @@ def loadMethod():
     else:
         try:
             varInt = int(inp)
+            #Set the stage and notation
             STATE['notation'] = methodStore.readMethods(varInt)
+            STATE['stage'] = methodStore.setStage(varInt)
         except:
-            print("Method not loaded!\nerror: wrong type")
+            if STATE['stage'] == 0:
+                print("Method not loaded!\nerror in assigning stage")
+            elif STATE['notation'] == []:
+                print("Method not loaded!\nerror in reading notation")
+            else:
+                print("Method not loaded!\n")
+
+    
