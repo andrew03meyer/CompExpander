@@ -1,8 +1,9 @@
 import src.permutations as permutations
+import src.methodStore as methodStore
 
 STATE = {
     'stage' : 0,
-    'methodFlip': [],
+    'notation': [],
     'bob' : 0,
     'single' : 0,
     'composition' : [],
@@ -11,9 +12,9 @@ STATE = {
 
 # Take input - keeps taking row crossing till input of 0
 def takePlaceNotation():
-    if len(STATE['methodFlip']) != 0:
+    if len(STATE['notation']) != 0:
         print("You've already entered the place notation: ")
-        print(STATE['methodFlip'])
+        print(STATE['notation'])
         if(input("Enter 0 if you wish to cancel\n>> ") == "0"):
             return
 
@@ -25,14 +26,14 @@ def takePlaceNotation():
         if inp == "0":
             exit = True
         elif inp.lower() == "x":
-            STATE['methodFlip'].append(-1)
+            STATE['notation'].append(-1)
         else:
             try:
                 varInt = int(inp)
-                STATE['methodFlip'].append(varInt)
+                STATE['notation'].append(varInt)
             except:
                 print("Input not added!\nerror: wrong type")
-    print(STATE['methodFlip'])
+    print(STATE['notation'])
 
 # Take bobs and singles
 def takeBandS():
@@ -106,6 +107,7 @@ def compWriteMenu():
     print("     2: enter the bob and single place notation")
     print("     3: enter the composition")
     print("     4: print the changes")
+    print("     5: load a method")
     print("     0: Exit")
 
     # take the option
@@ -121,8 +123,27 @@ def compWriteMenu():
         compWriteMenu()
     elif userOp == "4":
         permutations.permute(STATE)
+    elif userOp == "5":
+        loadMethod()
+        print(STATE['notation'])
+        compWriteMenu()
     elif userOp == "0":
         print("Goodbye!")
     else:
         print("Invalid input: " + userOp)
         compWriteMenu()
+
+def loadMethod():
+    # taking method name
+    print("Please enter the method you want to load (input 0 to exit):")
+    methodStore.printMethods()
+    
+    inp = input(">> ")
+    if inp == "0":
+        return
+    else:
+        try:
+            varInt = int(inp)
+            STATE['notation'] = methodStore.readMethods(varInt)
+        except:
+            print("Method not loaded!\nerror: wrong type")

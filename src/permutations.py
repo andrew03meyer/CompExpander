@@ -22,7 +22,7 @@ def permute(STATE):
     inc = 0
 
     while(count < 10000 and not roundsFound):
-        stationaryBells = STATE['methodFlip'][count % len(STATE['methodFlip'])]
+        stationaryBells = STATE['notation'][count % len(STATE['notation'])]
         #if all bells cross
         if stationaryBells == -1:
             permutations.append(permuteRow(permutations[count], []))
@@ -77,10 +77,14 @@ def permuteRow(row, swap):
 
 def isLeadEnd(permutations):
     if len(permutations) > 2:
-        #as the "bob" row will be calculated without the bob, we need to ignore it
-        backOne = permutations[len(permutations) - 2]
-        backTwo = permutations[len(permutations) - 3]
+        # The "bob" row will be calculated without the bob, so we need to ignore it
+        backOne = permutations[-1]
+        backTwo = permutations[-2]
+        
+        # print(backOne)
+        # print(backTwo)
+        
+        if backOne[0] == 1 and backTwo[0] == 1:
+            return True
     
-    if backOne[0] == 1 and backTwo[0] == 1:
-        return True
     return False
